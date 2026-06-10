@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
-import android.widget.*;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,12 +28,10 @@ public class MainActivity extends AppCompatActivity
     };
 
     private ActivityMainBinding binding;
-
     private StreamService streamService;
     private boolean streamBound = false;
     private RtmpReceiverService receiverService;
     private boolean receiverBound = false;
-
     private SceneManager sceneManager;
     private CameraOverlayView cameraOverlay;
 
@@ -52,14 +50,12 @@ public class MainActivity extends AppCompatActivity
             receiverService.setConnectionCallback(MainActivity.this);
             receiverService.setDataCallback(new RtmpReceiverService.ReceivedDataCallback() {
                 @Override public void onVideoData(byte[] data, int length, long ts) {
-                    if (streamBound && streamService.isStreaming()) {
+                    if (streamBound && streamService != null && streamService.isStreaming())
                         streamService.sendVideoData(data, length, ts);
-                    }
                 }
                 @Override public void onAudioData(byte[] data, int length, long ts) {
-                    if (streamBound && streamService.isStreaming()) {
+                    if (streamBound && streamService != null && streamService.isStreaming())
                         streamService.sendAudioData(data, length, ts);
-                    }
                 }
             });
             receiverBound = true;
@@ -94,21 +90,20 @@ public class MainActivity extends AppCompatActivity
                 binding.sceneGameplay,
                 binding.sceneBrb
         );
-
         binding.btnSceneStarting.setOnClickListener(v ->
                 sceneManager.switchScene(SceneManager.SceneType.STARTING_SOON));
         binding.btnSceneGameplay.setOnClickListener(v ->
                 sceneManager.switchScene(SceneManager.SceneType.GAMEPLAY));
         binding.btnSceneBrb.setOnClickListener(v ->
                 sceneManager.switchScene(SceneManager.SceneType.BRB));
-
         sceneManager.addListener(scene -> runOnUiThread(() ->
                 binding.tvCurrentScene.setText("Scene: " + sceneManager.getSceneLabel(scene))));
     }
 
     private void setupCameraOverlay() {
         cameraOverlay = new CameraOverlayView(this);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(240, 180);
+        android.widget.FrameLayout.LayoutParams lp =
+                new android.widget.FrameLayout.LayoutParams(240, 180);
         lp.leftMargin = 20;
         lp.topMargin = 20;
         binding.overlayContainer.addView(cameraOverlay, lp);
@@ -120,36 +115,33 @@ public class MainActivity extends AppCompatActivity
 
         binding.sliderMic.addOnChangeListener((slider, value, fromUser) -> {
             binding.tvMicLabel.setText("Mic: " + (int) value + "%");
-            if (streamBound) streamService.setVolumes(value / 100f,
-                    binding.sliderGame.getValue() / 100f);
+            if (streamBound && streamService != null)
+                streamService.setVolumes(value / 100f, binding.sliderGame.getValue() / 100f);
         });
 
         binding.sliderGame.addOnChangeListener((slider, value, fromUser) -> {
             binding.tvGameLabel.setText("Game: " + (int) value + "%");
-            if (streamBound) streamService.setVolumes(
-                    binding.sliderMic.getValue() / 100f, value / 100f);
+            if (streamBound && streamService != null)
+                streamService.setVolumes(binding.sliderMic.getValue() / 100f, value / 100f);
         });
     }
 
     private void setupButtons() {
         binding.btnStartStream.setOnClickListener(v -> {
-            if (streamBound && streamService.isStreaming()) {
+            if (streamBound && streamService != null && streamService.isStreaming()) {
                 stopStream();
             } else {
                 showStreamSetup();
             }
         });
-
         binding.btnSettings.setOnClickListener(v ->
                 startActivity(new Intent(this, StreamSetupActivity.class)));
-
         binding.btnToggleCamera.setOnClickListener(v -> toggleCamera());
         binding.btnFlipCamera.setOnClickListener(v -> flipCamera());
     }
 
     private void showStreamSetup() {
-        StreamConfig cfg = StreamConfig.getInstance();
-        if (cfg.getFullRtmpUrl().isEmpty()) {
+        if (StreamConfig.getInstance().getFullRtmpUrl().isEmpty()) {
             startActivity(new Intent(this, StreamSetupActivity.class));
             Toast.makeText(this, "Configure RTMP URL first", Toast.LENGTH_SHORT).show();
             return;
@@ -164,13 +156,15 @@ public class MainActivity extends AppCompatActivity
                 StreamConfig.getInstance().getFullRtmpUrl());
         ContextCompat.startForegroundService(this, intent);
         binding.btnStartStream.setText("⏹ Stop Stream");
-        binding.btnStartStream.setBackgroundColor(getColor(R.color.color_stop));
+        binding.btnStartStream.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(getColor(R.color.color_stop)));
     }
 
     private void stopStream() {
-        if (streamBound) streamService.stopStreaming();
+        if (streamBound && streamService != null) streamService.stopStreaming();
         binding.btnStartStream.setText("▶ Go Live");
-        binding.btnStartStream.setBackgroundColor(getColor(R.color.color_start));
+        binding.btnStartStream.setBackgroundTintList(
+                android.content.res.ColorStateList.valueOf(getColor(R.color.color_start)));
     }
 
     private void startCamera() {
@@ -191,8 +185,8 @@ public class MainActivity extends AppCompatActivity
 
     private void flipCamera() {
         cameraOverlay.stopCamera();
-        int current = StreamConfig.getInstance().getCameraFacing();
-        int next = (current == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT)
+        int next = (StreamConfig.getInstance().getCameraFacing()
+                == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT)
                 ? android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK
                 : android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
         StreamConfig.getInstance().setCameraFacing(next);
@@ -208,10 +202,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private boolean hasPermissions() {
-        for (String p : REQUIRED_PERMISSIONS) {
+        for (String p : REQUIRED_PERMISSIONS)
             if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED)
                 return false;
-        }
         return true;
     }
 
@@ -241,7 +234,8 @@ public class MainActivity extends AppCompatActivity
             binding.tvStreamStatus.setText("● Offline");
             binding.tvStreamStatus.setTextColor(getColor(android.R.color.darker_gray));
             binding.btnStartStream.setText("▶ Go Live");
-            binding.btnStartStream.setBackgroundColor(getColor(R.color.color_start));
+            binding.btnStartStream.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(getColor(R.color.color_start)));
         });
     }
 
@@ -256,7 +250,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    @Override public void onNewBitrateRtmp(long bitrate) {
+    @Override public void onBitrateChanged(long bitrate) {
         runOnUiThread(() ->
                 binding.tvBitrate.setText((bitrate / 1024) + " Kbps"));
     }
