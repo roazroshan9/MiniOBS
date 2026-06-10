@@ -32,13 +32,9 @@ android {
 }
 
 dependencies {
-    // AndroidX — all on Maven Central, guaranteed available
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-service:2.6.2'
-
-    // Glide for scene background images
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 }
