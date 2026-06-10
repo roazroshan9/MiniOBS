@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <!-- This is where the game stream video will render.
+         In a full implementation, bind a SurfaceView to the decoded RTMP frames. -->
+    <SurfaceView
+        android:id="@+id/surfaceGameplay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Placeholder shown while no stream is connected -->
+    <TextView
+        android:id="@+id/tvGameplayPlaceholder"
+        android:text="Waiting for game stream…\nConfigure game phone to push to this device"
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Live indicator badge -->
+    <TextView
+        android:text="● LIVE"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="#CC0000"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</FrameLayout>
