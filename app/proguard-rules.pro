@@ -1,0 +1,3 @@
+-keep class com.pedro.** { *; }
+-keep class com.miniobs.app.** { *; }
+-dontwarn com.pedro.**
