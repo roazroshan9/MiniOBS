@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0D0D0D">
+
+    <!-- ── Left panel: Video + Overlay ─────────────────────────────── -->
+    <FrameLayout
+        android:id="@+id/overlayContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#1A1A1A"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rightPanel"
+        app:layout_constraintHorizontalWeight="3">
+
+        <!-- Scene flipper (the "canvas") -->
+        <ViewFlipper
+            android:id="@+id/viewFlipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Scene 0: Starting Soon -->
+            <include
+                android:id="@+id/sceneStartingSoon"
+                layout="@layout/scene_starting_soon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Scene 1: Gameplay -->
+            <include
+                android:id="@+id/sceneGameplay"
+                layout="@layout/scene_gameplay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Scene 2: BRB -->
+            <include
+                android:id="@+id/sceneBrb"
+                layout="@layout/scene_brb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </ViewFlipper>
+
+        <!-- Camera overlay is added programmatically over this container -->
+    </FrameLayout>
+
+    <!-- ── Right panel: Controls ────────────────────────────────────── -->
+    <LinearLayout
+        android:id="@+id/rightPanel"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#161616"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontalWeight="1">
+
+        <!-- App title -->
+        <TextView
+            android:text="Mini OBS"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"/>
+
+        <!-- Stream status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/tvStreamStatus"
+                android:text="● Offline"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tvBitrate"
+                android:text="0 Kbps"
+                android:textColor="#888888"
+                android:textSize="11sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#333333" android:layout_marginBottom="8dp"/>
+
+        <!-- Scene switcher -->
+        <TextView
+            android:text="SCENES"
+            android:textSize="10sp"
+            android:textColor="#888888"
+            android:letterSpacing="0.12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="6dp"/>
+
+        <TextView
+            android:id="@+id/tvCurrentScene"
+            android:text="Scene: Starting Soon"
+            android:textColor="#CCCCCC"
+            android:textSize="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="6dp"/>
+
+        <Button
+            android:id="@+id/btnSceneStarting"
+            android:text="📺 Starting Soon"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:backgroundTint="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <Button
+            android:id="@+id/btnSceneGameplay"
+            android:text="🎮 Gameplay"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:backgroundTint="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <Button
+            android:id="@+id/btnSceneBrb"
+            android:text="⏸ Be Right Back"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:backgroundTint="#2A2A2A"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <!-- Divider -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#333333" android:layout_marginBottom="8dp"/>
+
+        <!-- Audio Mixer -->
+        <TextView
+            android:text="AUDIO MIXER"
+            android:textSize="10sp"
+            android:textColor="#888888"
+            android:letterSpacing="0.12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvMicLabel"
+            android:text="Mic: 100%"
+            android:textColor="#CCCCCC"
+            android:textSize="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sliderMic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="0"
+            android:valueTo="200"
+            android:stepSize="1"
+            app:thumbColor="@color/color_accent"
+            app:trackColorActive="@color/color_accent"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvGameLabel"
+            android:text="Game: 100%"
+            android:textColor="#CCCCCC"
+            android:textSize="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sliderGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="0"
+            android:valueTo="200"
+            android:stepSize="1"
+            app:thumbColor="@color/color_accent"
+            app:trackColorActive="@color/color_accent"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Divider -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#333333" android:layout_marginBottom="8dp"/>
+
+        <!-- Camera controls -->
+        <TextView
+            android:text="CAMERA"
+            android:textSize="10sp"
+            android:textColor="#888888"
+            android:letterSpacing="0.12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/btnToggleCamera"
+                android:text="Hide Cam"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:backgroundTint="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            <Button
+                android:id="@+id/btnFlipCamera"
+                android:text="Flip"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:backgroundTint="#2A2A2A"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#333333" android:layout_marginBottom="8dp"/>
+
+        <!-- Receiver status -->
+        <TextView
+            android:id="@+id/tvReceiverStatus"
+            android:text="📡 Waiting for game stream…"
+            android:textColor="#888888"
+            android:textSize="11sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Spacer -->
+        <View android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <!-- Settings -->
+        <Button
+            android:id="@+id/btnSettings"
+            android:text="⚙ Settings"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:backgroundTint="#2A2A2A"
+            android:textColor="#CCCCCC"
+            android:textSize="12sp"
+            android:layout_marginBottom="6dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <!-- Go Live -->
+        <Button
+            android:id="@+id/btnStartStream"
+            android:text="▶ Go Live"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/color_start"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
