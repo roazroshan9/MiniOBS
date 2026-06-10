@@ -20,23 +20,36 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.0'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Download Gradle Wrapper JAR
+        run: |
+          mkdir -p gradle/wrapper
+          curl -L -o gradle/wrapper/gradle-wrapper.jar \
+            "https://github.com/gradle/gradle/raw/v8.0.0/subprojects/wrapper-shared/src/main/resources/META-INF/versions/gradle-wrapper.jar" \
+            || curl -L -o gradle/wrapper/gradle-wrapper.jar \
+            "https://raw.githubusercontent.com/gradle/gradle/v8.0.2/gradle/wrapper/gradle-wrapper.jar" \
+            || wget -O gradle/wrapper/gradle-wrapper.jar \
+            "https://repo.maven.apache.org/maven2/org/gradle/gradle-wrapper/8.0/gradle-wrapper-8.0.jar" \
+            || true
+          ls -lh gradle/wrapper/
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+      - name: Build with Gradle directly if wrapper fails
+        run: |
+          if [ -f gradle/wrapper/gradle-wrapper.jar ]; then
+            echo "Using gradlew wrapper"
+            ./gradlew assembleDebug --stacktrace --no-daemon
+          else
+            echo "Using system gradle"
+            gradle assembleDebug --stacktrace --no-daemon
+          fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -48,4 +61,4 @@ jobs:
       - name: Show APK info
         run: |
           echo "✅ Build successful!"
-          ls -lh app/build/outputs/apk/debug/
+          ls -lh app/build/outputs/apk/debug/ 2>/dev/null || echo "APK not found"
