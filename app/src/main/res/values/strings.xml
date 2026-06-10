@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mini OBS</string>
+    <string name="scene_starting_soon">Starting Soon</string>
+    <string name="scene_gameplay">Gameplay</string>
+    <string name="scene_brb">Be Right Back</string>
+    <string name="btn_go_live">▶ Go Live</string>
+    <string name="btn_stop_stream">⏹ Stop Stream</string>
+    <string name="label_mic">Mic Volume</string>
+    <string name="label_game">Game Volume</string>
+    <string name="status_offline">● Offline</string>
+    <string name="status_live">🔴 LIVE</string>
+    <string name="hint_rtmp_url">RTMP URL (e.g. rtmp://a.rtmp.youtube.com/live2)</string>
+    <string name="hint_stream_key">Stream Key</string>
+    <string name="receiver_waiting">📡 Waiting for game stream on port 1935…</string>
+    <string name="perm_denied">Camera and microphone permissions are required.</string>
+</resources>
