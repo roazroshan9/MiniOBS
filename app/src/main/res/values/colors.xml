@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_primary">#1A1A2E</color>
+    <color name="color_primary_dark">#0D0D1A</color>
+    <color name="color_accent">#E94560</color>
+    <color name="color_start">#16A34A</color>
+    <color name="color_stop">#DC2626</color>
+    <color name="color_surface">#161616</color>
+    <color name="color_text_primary">#FFFFFF</color>
+    <color name="color_text_secondary">#AAAAAA</color>
+    <color name="color_divider">#333333</color>
+    <color name="color_overlay_bg">#CC000000</color>
+</resources>
